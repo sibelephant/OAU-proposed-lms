@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output and caches
+dist/
+build/
+.turbo/
+.cache/
+*.tsbuildinfo
+
+# Vite
+.vite/
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Logs and runtime files
+*.log
+logs/
+*.pid
+*.pid.lock
+
+# Database and local data
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+
+# Coverage and test output
+coverage/
+.nyc_output/
+
+# Editors and operating systems
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+.DS_Store
+Thumbs.db

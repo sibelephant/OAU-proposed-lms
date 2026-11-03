@@ -1,0 +1,26 @@
+{
+  "name": "atlas-lms",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AtlasLMS - Production LMS core based on UGA eLC and IU Canvas reverse-engineering",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "db:generate": "turbo run db:generate --filter=database",
+    "db:migrate": "turbo run db:migrate --filter=database",
+    "db:studio": "turbo run db:studio --filter=database",
+    "db:seed": "turbo run db:seed --filter=database",
+    "db:push": "turbo run db:push --filter=database"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.5.0",
+    "@types/node": "^22.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@9.0.0"
+}

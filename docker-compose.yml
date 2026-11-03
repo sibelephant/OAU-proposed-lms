@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: atlas-lms-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: atlas_lms
+      POSTGRES_USER: atlas
+      POSTGRES_PASSWORD: atlas123
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "atlas"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    container_name: atlas-lms-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://atlas:atlas123@db:5432/atlas_lms
+      NODE_ENV: development
+      JWT_SECRET: atlas-lms-dev-secret-change-in-production-min-32chars
+      ANTHROPIC_BASE_URL: https://openrouter.ai/api
+      ANTHROPIC_AUTH_TOKEN: sk-or-v1-41dfe1e75f5c56bdb72d3d9e926f917c4c74f25f88171929a10b8f60e11e98
+      CORS_ORIGIN: http://localhost:5173
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    working_dir: /app
+    command: sh -c "pnpm install --frozen-lockfile && pnpm run dev"
+    volumes:
+      - ./packages/api:/app
+      - /app/node_modules
+
+  web:
+    container_name: atlas-lms-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      VITE_API_URL: http://localhost:3000
+      NODE_ENV: development
+    ports:
+      - "5173:5173"
+    working_dir: /app
+    command: sh -c "pnpm install --frozen-lockfile && pnpm run dev"
+    volumes:
+      - ./packages/web:/app
+      - /app/node_modules
+
+volumes:
+  pg_data:
