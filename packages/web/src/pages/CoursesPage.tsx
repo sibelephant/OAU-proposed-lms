@@ -1,13 +1,13 @@
-import { Link, useNavigate } from '@tanstack/react-router';
-import { useQuery } from '@tanstack/react-query';
-import { BookOpen } from 'lucide-react';
-import { api } from '@/lib/api';
-import { useAuthStore } from '@/store/auth.store';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardBody } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { PageSpinner } from '@/components/ui/spinner';
-import { OauBadge } from '@/components/branding/OauBadge';
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { BookOpen } from "lucide-react";
+import { api } from "@/lib/api";
+import { useAuthStore } from "@/store/auth.store";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardBody } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { PageSpinner } from "@/components/ui/spinner";
+import { OauBadge } from "@/components/branding/OauBadge";
 
 export function CoursesPage() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export function CoursesPage() {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ['courses'],
+    queryKey: ["courses"],
     queryFn: () => api.courses.list(),
   });
 
@@ -31,14 +31,14 @@ export function CoursesPage() {
             <OauBadge compact />
             <div>
               <h1 className="text-xl font-extrabold text-white">Courses</h1>
-              <p className="text-sm text-slate-200">Manage your course shells</p>
+              <p className="text-sm text-slate-200">
+                Manage your course shells
+              </p>
             </div>
           </div>
           {isInstructor() && (
             <nav aria-label="Course navigation">
-              <a
-                href="/courses/new"
-                className="btn btn-primary">
+              <a href="/courses/new" className="btn btn-primary">
                 New Course
               </a>
             </nav>
@@ -112,7 +112,10 @@ export function CoursesPage() {
                     size="sm"
                     className="mt-3 w-full"
                     onClick={() =>
-                      navigate({ to: "/courses/$shellId", params: { shellId: course.id } })
+                      navigate({
+                        to: "/courses/$shellId",
+                        params: { shellId: course.id },
+                      })
                     }
                   >
                     View Details

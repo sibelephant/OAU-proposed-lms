@@ -1,6 +1,6 @@
-export { JwtService } from './jwt.service';
-export { LtiService } from './lti.service';
-export { hashPassword, verifyPassword } from './password.service';
+export { JwtService } from "./jwt.service";
+export { LtiService } from "./lti.service";
+export { hashPassword, verifyPassword } from "./password.service";
 
 export type {
   AtlasJwtPayload,
@@ -9,6 +9,6 @@ export type {
   OidcLoginInitParams,
   LtiIdTokenClaims,
   LtiLaunchResult,
-} from './types';
+} from "./types";
 
-export type { JwtServiceConfig } from './jwt.service';
+export type { JwtServiceConfig } from "./jwt.service";

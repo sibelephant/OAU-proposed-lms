@@ -1,29 +1,29 @@
-import { useState } from 'react';
-import { Link } from '@tanstack/react-router';
-import { useQuery } from '@tanstack/react-query';
-import { BookOpen, Search } from 'lucide-react';
-import { api } from '@/lib/api';
-import { qk } from '@/lib/query-client';
-import { useAuthStore } from '@/store/auth.store';
-import { Card, CardBody } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { PageSpinner } from '@/components/ui/spinner';
-import { OauBadge } from '@/components/branding/OauBadge';
+import { useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { BookOpen, Search } from "lucide-react";
+import { api } from "@/lib/api";
+import { qk } from "@/lib/query-client";
+import { useAuthStore } from "@/store/auth.store";
+import { Card, CardBody } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { PageSpinner } from "@/components/ui/spinner";
+import { OauBadge } from "@/components/branding/OauBadge";
 
 const TERMS = [
-  { value: '', label: 'All Terms' },
-  { value: '202608', label: 'Harmattan 2025/2026' },
-  { value: '202602', label: 'Rain 2025/2026' },
-  { value: '202508', label: 'Harmattan 2024/2025' },
+  { value: "", label: "All Terms" },
+  { value: "202608", label: "Harmattan 2025/2026" },
+  { value: "202602", label: "Rain 2025/2026" },
+  { value: "202508", label: "Harmattan 2024/2025" },
 ];
 
 // OAU Batch years for footer display
-const OAU_BATCH = '2025/2026';
+const OAU_BATCH = "2025/2026";
 
 export function DashboardPage() {
   const { isInstructor } = useAuthStore();
-  const [termId, setTermId] = useState('');
-  const [search, setSearch] = useState('');
+  const [termId, setTermId] = useState("");
+  const [search, setSearch] = useState("");
 
   const {
     data: courses = [],
@@ -50,11 +50,15 @@ export function DashboardPage() {
             <OauBadge compact />
             <div>
               <h1 className="text-xl font-extrabold text-white">AtlasLMS</h1>
-              <p className="text-sm text-slate-200">Obafemi Awolowo University</p>
+              <p className="text-sm text-slate-200">
+                Obafemi Awolowo University
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-slate-200">Batch {OAU_BATCH}</span>
+            <span className="text-sm font-medium text-slate-200">
+              Batch {OAU_BATCH}
+            </span>
             <Badge variant="primary" className="text-xs">
               {OAU_BATCH}
             </Badge>
@@ -142,7 +146,9 @@ export function DashboardPage() {
                   {/* Meta */}
                   <div className="mt-auto flex items-center justify-between text-xs text-slate-500">
                     <span>{course.unitCode}</span>
-                    <span className="capitalize">{course.gradeSystem} system</span>
+                    <span className="capitalize">
+                      {course.gradeSystem} system
+                    </span>
                   </div>
                 </CardBody>
               </Card>
@@ -160,20 +166,25 @@ export function DashboardPage() {
 }
 
 /* Term selector component */
-function TermSelector({ terms, value, onChange }: { terms: Array<{ value: string; label: string }>; value: string; onChange: (v: string) => void }) {
+function TermSelector({
+  terms,
+  value,
+  onChange,
+}: {
+  terms: Array<{ value: string; label: string }>;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <div className="relative">
       <select
-        value={value || ''}
+        value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         className="h-8 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
       >
         <option value="">Select term</option>
         {terms.map((t) => (
-          <option
-            key={t.value}
-            value={t.value}
-          >
+          <option key={t.value} value={t.value}>
             {t.label}
           </option>
         ))}

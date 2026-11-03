@@ -1,11 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
-import { useNavigate, useParams } from '@tanstack/react-router';
-import { BookOpen } from 'lucide-react';
-import { api } from '@/lib/api';
-import { useAuthStore } from '@/store/auth.store';
-import { Table, Thead, Th, Tbody, Tr, Td } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { PageSpinner } from '@/components/ui/spinner';
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "@tanstack/react-router";
+import { BookOpen } from "lucide-react";
+import { api } from "@/lib/api";
+import { useAuthStore } from "@/store/auth.store";
+import { Table, Thead, Th, Tbody, Tr, Td } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { PageSpinner } from "@/components/ui/spinner";
 
 export function GradebookPage() {
   const navigate = useNavigate();
@@ -22,19 +22,20 @@ export function GradebookPage() {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ['gradebook', shellId],
+    queryKey: ["gradebook", shellId],
     queryFn: () => api.gradebook.calculate(shellId!),
     enabled: !!shellId,
   });
 
   // If student, only show their own grade
-  const grades = isStudent() && user
-    ? finalGrades.filter((g) => g.orgDefinedId === user.orgDefinedId)
-    : finalGrades;
+  const grades =
+    isStudent() && user
+      ? finalGrades.filter((g) => g.orgDefinedId === user.orgDefinedId)
+      : finalGrades;
 
   const rowClass = (i: number) => {
-    if (i % 2 === 0) return 'bg-white';
-    return 'bg-slate-50';
+    if (i % 2 === 0) return "bg-white";
+    return "bg-slate-50";
   };
 
   return (
@@ -58,7 +59,7 @@ export function GradebookPage() {
           <Button
             size="sm"
             variant="secondary"
-            onClick={() => navigate({ to: '/dashboard' })}
+            onClick={() => navigate({ to: "/dashboard" })}
           >
             Back
           </Button>
@@ -80,9 +81,9 @@ export function GradebookPage() {
               size="sm"
               variant="secondary"
               onClick={() =>
-                api.gradebook.persist(shellId!).then(() =>
-                  window.alert('Grades persisted!')
-                )
+                api.gradebook
+                  .persist(shellId!)
+                  .then(() => window.alert("Grades persisted!"))
               }
             >
               Persist Final Grades
@@ -118,16 +119,26 @@ export function GradebookPage() {
                     <Td>{g.orgDefinedId}</Td>
                     <Td>{g.calculatedNumeric}</Td>
                     <Td>
-                      {g.calculatedNumeric >= 93 ? 'A'
-                        : g.calculatedNumeric >= 90 ? 'A-'
-                        : g.calculatedNumeric >= 87 ? 'B+'
-                        : g.calculatedNumeric >= 83 ? 'B'
-                        : g.calculatedNumeric >= 80 ? 'B-'
-                        : g.calculatedNumeric >= 77 ? 'C+'
-                        : g.calculatedNumeric >= 73 ? 'C'
-                        : g.calculatedNumeric >= 70 ? 'C-'
-                        : g.calculatedNumeric >= 60 ? 'D' : 'F'}
-                      </Td>
+                      {g.calculatedNumeric >= 93
+                        ? "A"
+                        : g.calculatedNumeric >= 90
+                          ? "A-"
+                          : g.calculatedNumeric >= 87
+                            ? "B+"
+                            : g.calculatedNumeric >= 83
+                              ? "B"
+                              : g.calculatedNumeric >= 80
+                                ? "B-"
+                                : g.calculatedNumeric >= 77
+                                  ? "C+"
+                                  : g.calculatedNumeric >= 73
+                                    ? "C"
+                                    : g.calculatedNumeric >= 70
+                                      ? "C-"
+                                      : g.calculatedNumeric >= 60
+                                        ? "D"
+                                        : "F"}
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>

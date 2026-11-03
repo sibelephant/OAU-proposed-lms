@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
-import { useAuthStore } from '@/store/auth.store';
-import { apiClient } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardBody } from '@/components/ui/card';
-import { OauBadge } from '@/components/branding/OauBadge';
-import axios from 'axios';
+import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { useAuthStore } from "@/store/auth.store";
+import { apiClient } from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardBody } from "@/components/ui/card";
+import { OauBadge } from "@/components/branding/OauBadge";
+import axios from "axios";
 
 interface LoginResponse {
   data: {
@@ -16,7 +16,13 @@ interface LoginResponse {
       loginId: string;
       firstName: string;
       lastName: string;
-      role: 'Student' | 'Instructor' | 'TA' | 'Designer' | 'Auditor' | 'SystemAdmin';
+      role:
+        | "Student"
+        | "Instructor"
+        | "TA"
+        | "Designer"
+        | "Auditor"
+        | "SystemAdmin";
       contextShellId?: string;
     };
   };
@@ -26,39 +32,42 @@ export function LoginPage() {
   const navigate = useNavigate();
   const setSession = useAuthStore((s) => s.setSession);
 
-  const [loginId, setLoginId] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [loginId, setLoginId] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!loginId.trim() || !password.trim()) {
-      setError('Both fields are required.');
+      setError("Both fields are required.");
       return;
     }
-    setError('');
+    setError("");
     setLoading(true);
     try {
       // Direct credential login — hits POST /api/v1/auth/login
       // (a thin endpoint that issues a JWT for dev/admin use)
-      const res = await apiClient.post<LoginResponse>('/auth/login', { loginId, password });
+      const res = await apiClient.post<LoginResponse>("/auth/login", {
+        loginId,
+        password,
+      });
       const { token, user } = res.data.data;
       setSession(token, {
         id: user.id,
         loginId: user.loginId,
-        orgDefinedId: '',
+        orgDefinedId: "",
         firstName: user.firstName,
         lastName: user.lastName,
         role: user.role,
         contextShellId: user.contextShellId,
       });
-      navigate({ to: '/dashboard' });
+      navigate({ to: "/dashboard" });
     } catch (err) {
       if (axios.isAxiosError(err) && err.response?.status === 401) {
-        setError('Invalid credentials. Please try again.');
+        setError("Invalid credentials. Please try again.");
       } else {
-        setError('An unexpected error occurred. Please try again.');
+        setError("An unexpected error occurred. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -82,7 +91,9 @@ export function LoginPage() {
           <div className="text-center mb-6">
             <OauBadge className="justify-center" />
             <h1 className="mt-3 text-2xl font-bold text-slate-900">AtlasLMS</h1>
-            <p className="mt-1 text-sm text-slate-500">Sign in to your account</p>
+            <p className="mt-1 text-sm text-slate-500">
+              Sign in to your account
+            </p>
           </div>
 
           <Card>
@@ -107,7 +118,10 @@ export function LoginPage() {
                 />
 
                 {error && (
-                  <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-xs text-red-700">
+                  <p
+                    role="alert"
+                    className="rounded-md bg-red-50 px-3 py-2 text-xs text-red-700"
+                  >
                     {error}
                   </p>
                 )}
@@ -121,7 +135,7 @@ export function LoginPage() {
 
           {/* LTI entry point notice */}
           <p className="mt-4 text-center text-sm text-slate-400">
-            Accessing via Canvas / Moodle?{' '}
+            Accessing via Canvas / Moodle?{" "}
             <a href="/lti/login" className="text-brand-600 hover:underline">
               LTI 1.3 Launch
             </a>

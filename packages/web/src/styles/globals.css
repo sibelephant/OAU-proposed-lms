@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --color-brand: 7 89 133;        /* OAU deep blue */
+    --color-brand: 7 89 133; /* OAU deep blue */
     --color-brand-foreground: 255 255 255;
     --color-brand-muted: 156 163 175;
     --color-danger: 239 68 68;
@@ -26,10 +26,18 @@
     @apply bg-slate-50 text-slate-900 font-sans text-base leading-relaxed;
   }
 
-  h1 { @apply text-2xl font-semibold tracking-tight; }
-  h2 { @apply text-xl font-semibold tracking-tight; }
-  h3 { @apply text-base font-semibold; }
-  h4 { @apply text-sm font-medium; }
+  h1 {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+  h2 {
+    @apply text-xl font-semibold tracking-tight;
+  }
+  h3 {
+    @apply text-base font-semibold;
+  }
+  h4 {
+    @apply text-sm font-medium;
+  }
 }
 
 @layer components {
