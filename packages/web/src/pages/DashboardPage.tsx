@@ -76,7 +76,7 @@ export function DashboardPage() {
             <Search className="relative ml-auto w-56" />
             <input
               aria-label="Search courses"
-              className="h-8 w-full rounded-md border border-slate-300 bg-white pl-8 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 placeholder-slate-400"
+              className="h-8 w-full rounded-md border border-slate-300 bg-white pl-8 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-oau-gold-500 focus-visible:ring-offset-2 placeholder-slate-400"
               placeholder="Search courses…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -180,7 +180,7 @@ function TermSelector({
       <select
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
-        className="h-8 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+        className="h-8 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-oau-gold-500 focus-visible:ring-offset-2"
       >
         <option value="">Select term</option>
         {terms.map((t) => (

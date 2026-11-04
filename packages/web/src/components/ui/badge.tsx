@@ -4,7 +4,7 @@ const variants = {
   default: 'bg-slate-100 text-slate-700',
   primary: 'bg-brand-100 text-brand-700',
   success: 'bg-green-100 text-green-700',
-  warning: 'bg-amber-100 text-amber-700',
+  warning: 'bg-amber-50 text-amber-700 border border-amber-200',
   danger: 'bg-red-100 text-red-700',
   outline: 'border border-slate-300 text-slate-700',
 } as const;

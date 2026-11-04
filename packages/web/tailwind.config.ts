@@ -6,40 +6,58 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // OAU (Obafemi Awolowo University) brand palette: deep blue and gold.
+        // OAU (Obafemi Awolowo University) institutional palette.
         brand: {
-          50: "#eef5fb",
-          100: "#d9e8f4",
-          200: "#b8d1e5",
-          300: "#8eb2cf",
-          400: "#5d8eaf",
-          500: "#316b91",
-          600: "#075985",
-          700: "#064a70",
-          800: "#073d5c",
-          900: "#082f49",
-          950: "#061f30",
+          50: "#E8EFF7",
+          100: "#DCE8F4",
+          200: "#BFCEE2",
+          300: "#8EAAC8",
+          400: "#527EAE",
+          500: "#255899",
+          600: "#10386B",
+          700: "#0C2D58",
+          800: "#071936",
+          900: "#071936",
+          950: "#040E21",
         },
         "oau-blue": {
-          50: "#eef5fb",
-          100: "#d9e8f4",
-          300: "#8eb2cf",
-          600: "#075985",
-          900: "#082f49",
+          50: "#E8EFF7",
+          100: "#DCE8F4",
+          300: "#8EAAC8",
+          600: "#10386B",
+          900: "#071936",
         },
         "oau-gold": {
-          300: "#f4d36b",
-          400: "#e5b83f",
-          500: "#c9971a",
-          600: "#a9780f",
-          700: "#80590d",
+          100: "#FEF9E7",
+          300: "#F5B82E",
+          400: "#F5B82E",
+          500: "#D4AF37",
+          600: "#785C12",
+          700: "#785C12",
+        },
+        "oau-terracotta": {
+          500: "#E1635C",
         },
         // Semantic surface tokens
         surface: {
           DEFAULT: "#ffffff",
-          muted: "#f8fafc",
-          subtle: "#f1f5f9",
-          overlay: "#e2e8f0",
+          muted: "#F8FAFC",
+          subtle: "#F1F5F9",
+          overlay: "#E2E8F0",
+        },
+        // Architectural neutral scale used by the existing slate utilities.
+        slate: {
+          50: "#F8FAFC",
+          100: "#F1F5F9",
+          200: "#E2E8F0",
+          300: "#CBD5E1",
+          400: "#94A3B8",
+          500: "#64748B",
+          600: "#475569",
+          700: "#334155",
+          800: "#1E293B",
+          900: "#0F172A",
+          950: "#020617",
         },
         // OAU Batch/Year colors (secondary palette)
         batch: {
@@ -63,7 +81,7 @@ const config: Config = {
         "2xl": "1rem",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ["Aptos", "Segoe UI", "sans-serif"],
         serif: ["Georgia", "Cambria", "serif"],
         mono: ["JetBrains Mono", "Menlo", "monospace"],
       },
