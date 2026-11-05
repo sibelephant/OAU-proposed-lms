@@ -5,25 +5,19 @@ import { BookOpen, Search } from "lucide-react";
 import { api } from "@/lib/api";
 import { qk } from "@/lib/query-client";
 import { useAuthStore } from "@/store/auth.store";
-import { Card, CardBody } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { PageSpinner } from "@/components/ui/spinner";
-import { OauBadge } from "@/components/branding/OauBadge";
+import { TopBar } from "@/components/layout/TopBar";
 
 const TERMS = [
-  { value: "", label: "All Terms" },
-  { value: "202608", label: "Harmattan 2025/2026" },
-  { value: "202602", label: "Rain 2025/2026" },
-  { value: "202508", label: "Harmattan 2024/2025" },
+  { value: "",       label: "All terms" },
+  { value: "202608", label: "Harmattan 2025 / 2026" },
+  { value: "202602", label: "Rain 2025 / 2026" },
+  { value: "202508", label: "Harmattan 2024 / 2025" },
 ];
 
-// OAU Batch years for footer display
-const OAU_BATCH = "2025/2026";
-
 export function DashboardPage() {
-  const { isInstructor } = useAuthStore();
-  const [termId, setTermId] = useState("");
-  const [search, setSearch] = useState("");
+  const { user, isInstructor } = useAuthStore();
+  const [termId, setTermId]   = useState("");
+  const [search, setSearch]   = useState("");
 
   const {
     data: courses = [],
@@ -31,7 +25,7 @@ export function DashboardPage() {
     isError,
   } = useQuery({
     queryKey: qk.courses.list(termId),
-    queryFn: () => api.courses.list(termId || undefined),
+    queryFn:  () => api.courses.list(termId || undefined),
   });
 
   const filtered = courses.filter((c) =>
@@ -41,42 +35,44 @@ export function DashboardPage() {
       : true,
   );
 
-  return (
-    <div className="min-h-screen bg-slate-50">
-      {/* OAU Banner Header */}
-      <header className="border-b border-slate-200 bg-gradient-to-b from-brand-600 to-brand-800 p-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <OauBadge compact />
-            <div>
-              <h1 className="text-xl font-extrabold text-white">AtlasLMS</h1>
-              <p className="text-sm text-slate-200">
-                Obafemi Awolowo University
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-slate-200">
-              Batch {OAU_BATCH}
-            </span>
-            <Badge variant="primary" className="text-xs">
-              {OAU_BATCH}
-            </Badge>
-          </div>
-        </div>
-      </header>
+  const greeting = user
+    ? `Welcome back, ${user.firstName}`
+    : "Dashboard";
 
-      <main className="flex-1 overflow-y-auto p-6">
-        {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="flex-1">
-            <TermSelector terms={TERMS} value={termId} onChange={setTermId} />
+  return (
+    <>
+      <TopBar
+        title={greeting}
+        subtitle={user ? `${user.role} · OAU eLearning` : undefined}
+      />
+
+      <div className="px-8 py-8" style={{ maxWidth: 1200 }}>
+
+        {/* ── Filter bar ──────────────────────────────────────────────────── */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-8">
+          {/* Term selector */}
+          <div className="relative">
+            <select
+              value={termId}
+              onChange={(e) => setTermId(e.target.value)}
+              className="field-input pl-3 pr-8"
+              style={{ width: 220, backgroundImage: "none" }}
+            >
+              {TERMS.map((t) => (
+                <option key={t.value} value={t.value}>{t.label}</option>
+              ))}
+            </select>
           </div>
-          <div>
-            <Search className="relative ml-auto w-56" />
+
+          {/* Search */}
+          <div className="relative flex-1 max-w-xs">
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none"
+              style={{ color: "var(--stone-500)" }}
+            />
             <input
               aria-label="Search courses"
-              className="h-8 w-full rounded-md border border-slate-300 bg-white pl-8 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-oau-gold-500 focus-visible:ring-offset-2 placeholder-slate-400"
+              className="field-input pl-9"
               placeholder="Search courses…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -84,8 +80,12 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* Course grid */}
-        {isLoading && <PageSpinner />}
+        {/* ── States ──────────────────────────────────────────────────────── */}
+        {isLoading && (
+          <div className="flex justify-center py-16">
+            <span className="spinner-ring" />
+          </div>
+        )}
 
         {isError && (
           <div className="alert alert-error mb-6">
@@ -93,102 +93,90 @@ export function DashboardPage() {
           </div>
         )}
 
-        {!isLoading && filtered.length === 0 && (
-          <div className="p-8 text-center">
-            <BookOpen className="h-12 w-12 mx-auto opacity-50 mb-3" />
-            <p className="text-slate-500">No courses found.</p>
+        {!isLoading && !isError && filtered.length === 0 && (
+          <div className="flex flex-col items-center py-20 text-center">
+            <BookOpen className="h-10 w-10 mb-3" style={{ color: "var(--stone-300)" }} />
+            <p className="text-sm" style={{ color: "var(--ink-muted)" }}>
+              {search ? "No courses match your search." : "No courses found for this term."}
+            </p>
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((course) => (
-            <Link
-              key={course.id}
-              to="/courses/$shellId"
-              params={{ shellId: course.id }}
-              className="group block rounded-lg overflow-hidden"
-            >
-              <Card className="h-full transition-shadow hover:shadow-card-hover">
-                <CardBody className="flex flex-col gap-3 p-5">
-                  {/* Header row */}
-                  <div className="flex items-between justify-between">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-50">
-                      <BookOpen className="h-4 w-4 text-brand-600" />
-                    </div>
-                    <div className="flex gap-1.5">
-                      {course.isSandbox && (
-                        <Badge variant="warning" className="text-xs">
-                          Sandbox
-                        </Badge>
-                      )}
-                      {course.isPublished ? (
-                        <Badge variant="success" className="text-xs">
-                          Published
-                        </Badge>
-                      ) : (
-                        <Badge variant="default" className="text-xs">
-                          Draft
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
+        {/* ── Course grid ─────────────────────────────────────────────────── */}
+        {!isLoading && filtered.length > 0 && (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((course) => (
+              <Link
+                key={course.id}
+                to="/courses/$shellId"
+                params={{ shellId: course.id }}
+                className="block"
+                style={{ textDecoration: "none" }}
+              >
+                <article
+                  className="card h-full flex flex-col cursor-pointer"
+                  style={{ padding: 0 }}
+                >
+                  {/* Gold top accent bar */}
+                  <div
+                    style={{
+                      height: 3,
+                      background: "var(--gold-500, #b8922a)",
+                      borderRadius: "var(--r-lg, 16px) var(--r-lg, 16px) 0 0",
+                    }}
+                  />
 
-                  {/* Title */}
-                  <div>
-                    <p className="text-xs font-medium text-brand-600">
-                      {course.courseCode}
-                    </p>
-                    <p className="mt-0.5 font-semibold text-slate-900 line-clamp-2">
+                  <div className="flex flex-col gap-3 p-5 flex-1">
+                    {/* Course code + status */}
+                    <div className="flex items-center justify-between">
+                      <span
+                        className="text-xs font-medium uppercase tracking-wider"
+                        style={{ color: "var(--gold-700, #8a6a1a)" }}
+                      >
+                        {course.courseCode}
+                      </span>
+                      <span
+                        className={`badge ${course.isPublished ? "badge-success" : "badge-default"}`}
+                      >
+                        {course.isPublished ? "Published" : "Draft"}
+                      </span>
+                    </div>
+
+                    {/* Title */}
+                    <h3
+                      className="text-base font-normal leading-snug line-clamp-2"
+                      style={{
+                        fontFamily: "'Playfair Display', Georgia, serif",
+                        color: "var(--ink)",
+                      }}
+                    >
                       {course.title}
-                    </p>
-                  </div>
+                    </h3>
 
-                  {/* Meta */}
-                  <div className="mt-auto flex items-center justify-between text-xs text-slate-500">
-                    <span>{course.unitCode}</span>
-                    <span className="capitalize">
-                      {course.gradeSystem} system
-                    </span>
+                    {/* Meta */}
+                    <div
+                      className="mt-auto flex items-center justify-between text-xs pt-3"
+                      style={{
+                        borderTop: "1px solid var(--hairline)",
+                        color: "var(--ink-muted)",
+                      }}
+                    >
+                      <span>{course.unitCode ?? "—"}</span>
+                      <span className="capitalize">{course.gradeSystem} grading</span>
+                    </div>
                   </div>
-                </CardBody>
-              </Card>
-            </Link>
-          ))}
-          {!isInstructor() && courses.length === 0 && (
-            <p className="col-span-2 text-center text-slate-400 py-8">
-              No courses available
-            </p>
-          )}
-        </div>
-      </main>
-    </div>
-  );
-}
+                </article>
+              </Link>
+            ))}
+          </div>
+        )}
 
-/* Term selector component */
-function TermSelector({
-  terms,
-  value,
-  onChange,
-}: {
-  terms: Array<{ value: string; label: string }>;
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div className="relative">
-      <select
-        value={value || ""}
-        onChange={(e) => onChange(e.target.value)}
-        className="h-8 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-oau-gold-500 focus-visible:ring-offset-2"
-      >
-        <option value="">Select term</option>
-        {terms.map((t) => (
-          <option key={t.value} value={t.value}>
-            {t.label}
-          </option>
-        ))}
-      </select>
-    </div>
+        {!isInstructor() && courses.length === 0 && !isLoading && (
+          <p className="text-sm text-center py-8" style={{ color: "var(--stone-500)" }}>
+            No courses available.
+          </p>
+        )}
+      </div>
+    </>
   );
 }

@@ -6,118 +6,122 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // OAU (Obafemi Awolowo University) institutional palette.
+        // ── Institutional navy ──────────────────────────────────────────────
+        navy: {
+          950: "#0a1628",
+          900: "#0f1c3a",
+          700: "#1a3260",
+          500: "#2d5299",
+          200: "#c2cedf",
+          100: "#dde4ef",
+          "050": "#f0f3f8",
+        },
+        // ── OAU gold accent ─────────────────────────────────────────────────
+        gold: {
+          700: "#8a6a1a",
+          500: "#b8922a",
+          400: "#d4a843",
+          100: "#faf3e0",
+        },
+        // ── Warm stone / parchment neutrals ────────────────────────────────
+        stone: {
+          900: "#2c2824",
+          700: "#4a4540",
+          500: "#7a7470",
+          300: "#c8c3bc",
+          200: "#e0dbd3",
+          100: "#ede8e0",
+          "050": "#f6f2ec",
+        },
+        // ── Semantic aliases (used by Tailwind utility classes) ─────────────
+        ink:     "#0f1c3a",
+        canvas:  "#f6f2ec",
+        surface: "#ffffff",
+        hairline:"#e0dbd3",
+        accent:  "#b8922a",
+        // ── Legacy brand tokens (kept for backward compat in any missed spots)
         brand: {
-          50: "#E8EFF7",
-          100: "#DCE8F4",
-          200: "#BFCEE2",
-          300: "#8EAAC8",
-          400: "#527EAE",
-          500: "#255899",
-          600: "#10386B",
-          700: "#0C2D58",
-          800: "#071936",
-          900: "#071936",
-          950: "#040E21",
+          50:  "#f0f3f8",
+          100: "#dde4ef",
+          200: "#c2cedf",
+          300: "#8eaac8",
+          400: "#2d5299",
+          500: "#2d5299",
+          600: "#1a3260",
+          700: "#0f1c3a",
+          800: "#0a1628",
+          900: "#0a1628",
+          950: "#060e1f",
         },
-        "oau-blue": {
-          50: "#E8EFF7",
-          100: "#DCE8F4",
-          300: "#8EAAC8",
-          600: "#10386B",
-          900: "#071936",
-        },
-        "oau-gold": {
-          100: "#FEF9E7",
-          300: "#F5B82E",
-          400: "#F5B82E",
-          500: "#D4AF37",
-          600: "#785C12",
-          700: "#785C12",
-        },
-        "oau-terracotta": {
-          500: "#E1635C",
-        },
-        // Semantic surface tokens
-        surface: {
-          DEFAULT: "#ffffff",
-          muted: "#F8FAFC",
-          subtle: "#F1F5F9",
-          overlay: "#E2E8F0",
-        },
-        // Architectural neutral scale used by the existing slate utilities.
-        slate: {
-          50: "#F8FAFC",
-          100: "#F1F5F9",
-          200: "#E2E8F0",
-          300: "#CBD5E1",
-          400: "#94A3B8",
-          500: "#64748B",
-          600: "#475569",
-          700: "#334155",
-          800: "#1E293B",
-          900: "#0F172A",
-          950: "#020617",
-        },
-        // OAU Batch/Year colors (secondary palette)
-        batch: {
-          50: "#fffbeb",
-          100: "#fef3c7",
-          200: "#fde68a",
-          300: "#fcd34d",
-          400: "#fbbf24",
-          500: "#f59e0b",
-          600: "#eab308",
-          700: "#ca8a04",
-          800: "#a16207",
-          900: "#854d0e",
-        },
+        // ── Status ──────────────────────────────────────────────────────────
+        success: { DEFAULT: "#1d6c37", bg: "#e6f4ea", border: "#bbf7d0" },
+        warning: { DEFAULT: "#7a5c0a", bg: "#fef9e7", border: "#e8d48a" },
+        danger:  { DEFAULT: "#991b1b", bg: "#fef2f2", border: "#fecaca" },
       },
-      borderRadius: {
-        sm: "0.25rem",
-        md: "0.375rem",
-        lg: "0.5rem",
-        xl: "0.75rem",
-        "2xl": "1rem",
-      },
+
       fontFamily: {
-        sans: ["Aptos", "Segoe UI", "sans-serif"],
-        serif: ["Georgia", "Cambria", "serif"],
-        mono: ["JetBrains Mono", "Menlo", "monospace"],
+        display: ["'Playfair Display'", "Georgia", "serif"],
+        sans:    ["'Inter'", "system-ui", "sans-serif"],
+        mono:    ["'JetBrains Mono'", "Menlo", "monospace"],
       },
+
+      fontSize: {
+        "2xs": ["11px", { lineHeight: "1.4", letterSpacing: "0.03em" }],
+        xs:    ["13px", { lineHeight: "1.5" }],
+        sm:    ["14px", { lineHeight: "1.5" }],
+        base:  ["16px", { lineHeight: "1.6" }],
+        lg:    ["18px", { lineHeight: "1.5" }],
+        xl:    ["20px", { lineHeight: "1.4" }],
+        "2xl": ["24px", { lineHeight: "1.3" }],
+        "3xl": ["30px", { lineHeight: "1.2", letterSpacing: "-0.02em" }],
+        "4xl": ["36px", { lineHeight: "1.15", letterSpacing: "-0.025em" }],
+        "5xl": ["48px", { lineHeight: "1.1",  letterSpacing: "-0.03em" }],
+      },
+
+      borderRadius: {
+        sm:   "8px",
+        md:   "12px",
+        lg:   "16px",
+        xl:   "20px",
+        btn:  "6px",
+        full: "9999px",
+      },
+
       boxShadow: {
-        card: "0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06)",
-        "card-hover": "0 4px 12px 0 rgb(0 0 0 / 0.08)",
-        modal: "0 20px 60px -10px rgb(0 0 0 / 0.2)",
-        "batch-glow": "0 0 0 1px rgba(251, 191, 36, 0.15)",
+        card:   "0 1px 4px 0 rgb(15 28 58 / 0.06), 0 1px 2px -1px rgb(15 28 58 / 0.04)",
+        raise:  "0 4px 16px 0 rgb(15 28 58 / 0.10), 0 2px 4px -1px rgb(15 28 58 / 0.06)",
+        modal:  "0 24px 64px -12px rgb(15 28 58 / 0.22)",
+        focus:  "0 0 0 3px rgb(184 146 42 / 0.20)",
+        inset:  "inset 0 1px 2px 0 rgb(15 28 58 / 0.06)",
       },
-      // Batch/decade stripe pattern CSS variable
-      backgroundImage: {
-        "batch-stripe":
-          "conic-gradient(from 45deg, #1a5af5, #1344e1, #1638b6, #17338f, #1a5af5)",
+
+      spacing: {
+        "4.5": "18px",
+        "13":  "52px",
+        "15":  "60px",
+        "18":  "72px",
+        "22":  "88px",
+        "26":  "104px",
+        "30":  "120px",
       },
-    },
-    screens: {
-      sm: "640px",
-      md: "768px",
-      lg: "1024px",
-      xl: "1280px",
-      "2xl": "1536px",
+
+      width:  { sidebar: "224px" },
+      height: { topbar:  "60px"  },
+
+      transitionTimingFunction: {
+        ease: "cubic-bezier(0.22, 1, 0.36, 1)",
+      },
+
+      screens: {
+        sm:  "640px",
+        md:  "768px",
+        lg:  "1024px",
+        xl:  "1280px",
+        "2xl": "1536px",
+      },
     },
   },
-  plugins: [
-    // Add batch stripe plugin
-    function ({ addUtilities }) {
-      const batchStripe = {
-        ".batch-stripe": {
-          "background-image": "var(--batch-stripe)",
-          "background-size": "300% 300%",
-          animation: "batch-rotate 8s linear infinite",
-        },
-      };
-      addUtilities(batchStripe, ["responsive"]);
-    },
-  ],
+  plugins: [],
 };
 
 export default config;

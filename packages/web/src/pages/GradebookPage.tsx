@@ -1,21 +1,36 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { BookOpen } from "lucide-react";
+import { ChevronLeft, BookOpen } from "lucide-react";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth.store";
-import { Table, Thead, Th, Tbody, Tr, Td } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { PageSpinner } from "@/components/ui/spinner";
+import { TopBar } from "@/components/layout/TopBar";
+
+function letterGrade(score: number): string {
+  if (score >= 93) return "A";
+  if (score >= 90) return "A−";
+  if (score >= 87) return "B+";
+  if (score >= 83) return "B";
+  if (score >= 80) return "B−";
+  if (score >= 77) return "C+";
+  if (score >= 73) return "C";
+  if (score >= 70) return "C−";
+  if (score >= 60) return "D";
+  return "F";
+}
+
+function gradeColor(letter: string) {
+  if (letter.startsWith("A")) return { color: "#1d6c37" };
+  if (letter.startsWith("B")) return { color: "var(--navy-700, #1a3260)" };
+  if (letter.startsWith("C")) return { color: "var(--gold-700, #8a6a1a)" };
+  return { color: "#991b1b" };
+}
 
 export function GradebookPage() {
   const navigate = useNavigate();
   const { shellId } = useParams({ strict: false });
   const { user, isInstructor, isStudent } = useAuthStore();
 
-  // Only instructors and students can view the gradebook
-  if (!isInstructor() && !isStudent()) {
-    return null;
-  }
+  if (!isInstructor() && !isStudent()) return null;
 
   const {
     data: finalGrades = [],
@@ -23,136 +38,174 @@ export function GradebookPage() {
     isError,
   } = useQuery({
     queryKey: ["gradebook", shellId],
-    queryFn: () => api.gradebook.calculate(shellId!),
-    enabled: !!shellId,
+    queryFn:  () => api.gradebook.calculate(shellId!),
+    enabled:  !!shellId,
   });
 
-  // If student, only show their own grade
   const grades =
     isStudent() && user
       ? finalGrades.filter((g) => g.orgDefinedId === user.orgDefinedId)
       : finalGrades;
 
-  const rowClass = (i: number) => {
-    if (i % 2 === 0) return "bg-white";
-    return "bg-slate-50";
-  };
-
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* OAU Header */}
-      <header className="border-b border-slate-200 bg-gradient-to-b from-brand-600 to-brand-800 p-6 max-w-7xl mx-auto">
-        <div className="flex items-center">
-          <div className="flex h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center">
-            <span className="text-xl font-bold text-brand-600">OAU</span>
-          </div>
-          <div>
-            <h1 className="text-xl font-extrabold text-white ml-3">
-              Gradebook
-            </h1>
-            <p className="text-sm text-slate-200">Obafemi Awolowo University</p>
-          </div>
-        </div>
-      </header>
-      {shellId && (
-        <nav className="my-4 flex items-center gap-2">
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => navigate({ to: "/dashboard" })}
-          >
-            Back
-          </Button>
-        </nav>
-      )}
+    <>
+      <TopBar
+        title="Gradebook"
+        subtitle={shellId ? `Course shell ${shellId}` : "Select a course"}
+        actions={
+          shellId && (
+            <button
+              className="btn btn-secondary btn-sm flex items-center gap-1"
+              onClick={() => navigate({ to: "/dashboard" })}
+            >
+              <ChevronLeft className="h-3.5 w-3.5" />
+              Back
+            </button>
+          )
+        }
+      />
 
-      <main className="flex-1 p-6">
-        {/* Course shell info */}
-        {shellId && (
-          <div className="alert alert-info mb-6">
-            <span className="font-medium">Course Shell:</span> Shell {shellId}
-          </div>
-        )}
+      <div className="px-8 py-8" style={{ maxWidth: 1200 }}>
 
         {/* Persist button (instructors only) */}
-        {isInstructor() && (
-          <div className="mb-6">
-            <Button
-              size="sm"
-              variant="secondary"
+        {isInstructor() && shellId && (
+          <div className="mb-6 flex items-center justify-between">
+            <p className="text-sm" style={{ color: "var(--ink-muted)" }}>
+              {grades.length} student{grades.length !== 1 ? "s" : ""}
+            </p>
+            <button
+              className="btn btn-secondary btn-sm"
               onClick={() =>
                 api.gradebook
-                  .persist(shellId!)
-                  .then(() => window.alert("Grades persisted!"))
+                  .persist(shellId)
+                  .then(() => alert("Final grades persisted."))
               }
             >
-              Persist Final Grades
-            </Button>
+              Persist final grades
+            </button>
           </div>
         )}
 
-        {isLoading && <PageSpinner />}
+        {/* Loading */}
+        {isLoading && (
+          <div className="flex justify-center py-16">
+            <span className="spinner-ring" />
+          </div>
+        )}
 
+        {/* Error */}
         {isError && (
           <div className="alert alert-error mb-6">
             Failed to load grades. Check your connection.
           </div>
         )}
 
-        {!isLoading && grades.length > 0 && (
-          <div className="overflow-x-auto rounded-lg overflow-hidden">
-            <Table>
-              <Thead>
-                <Tr>
-                  <Th>Student</Th>
-                  <Th>Org Defined ID</Th>
-                  <Th>Calculated Grade</Th>
-                  <Th>Letter Grade</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {grades.map((g, i) => (
-                  <Tr key={g.studentId} className={rowClass(i)}>
-                    <Td className="font-medium">
-                      {g.firstName} {g.lastName}
-                    </Td>
-                    <Td>{g.orgDefinedId}</Td>
-                    <Td>{g.calculatedNumeric}</Td>
-                    <Td>
-                      {g.calculatedNumeric >= 93
-                        ? "A"
-                        : g.calculatedNumeric >= 90
-                          ? "A-"
-                          : g.calculatedNumeric >= 87
-                            ? "B+"
-                            : g.calculatedNumeric >= 83
-                              ? "B"
-                              : g.calculatedNumeric >= 80
-                                ? "B-"
-                                : g.calculatedNumeric >= 77
-                                  ? "C+"
-                                  : g.calculatedNumeric >= 73
-                                    ? "C"
-                                    : g.calculatedNumeric >= 70
-                                      ? "C-"
-                                      : g.calculatedNumeric >= 60
-                                        ? "D"
-                                        : "F"}
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
+        {/* Empty */}
+        {!isLoading && !isError && grades.length === 0 && (
+          <div className="flex flex-col items-center py-20 text-center">
+            <BookOpen className="h-10 w-10 mb-3" style={{ color: "var(--stone-300)" }} />
+            <p className="text-sm" style={{ color: "var(--ink-muted)" }}>
+              No grades found for this course.
+            </p>
           </div>
         )}
 
-        {!isLoading && grades.length === 0 && (
-          <div className="p-8 text-center">
-            <BookOpen className="h-12 w-12 mx-auto opacity-50 mb-4" />
-            <p>No grades found for this course.</p>
+        {/* Table */}
+        {!isLoading && grades.length > 0 && (
+          <div
+            className="overflow-hidden"
+            style={{
+              background: "var(--bg-surface)",
+              border: "1px solid var(--hairline)",
+              borderRadius: "var(--r-lg, 16px)",
+              boxShadow: "var(--shadow-card)",
+            }}
+          >
+            <div className="overflow-x-auto">
+              <table className="tbl">
+                <thead>
+                  <tr>
+                    <th style={{ paddingLeft: 24 }}>Student</th>
+                    <th>Org ID</th>
+                    <th>Score</th>
+                    <th>Grade</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {grades.map((g, i) => {
+                    const letter = letterGrade(Number(g.calculatedNumeric));
+                    return (
+                      <tr
+                        key={g.studentId}
+                        style={{
+                          background: i % 2 === 0
+                            ? "var(--bg-surface)"
+                            : "var(--stone-050, #f6f2ec)",
+                        }}
+                      >
+                        <td
+                          style={{ paddingLeft: 24, fontWeight: 500, color: "var(--ink)" }}
+                        >
+                          {g.firstName} {g.lastName}
+                        </td>
+                        <td style={{ color: "var(--ink-muted)", fontFamily: "'JetBrains Mono', monospace", fontSize: 13 }}>
+                          {g.orgDefinedId}
+                        </td>
+                        <td style={{ color: "var(--ink)" }}>
+                          {Number(g.calculatedNumeric).toFixed(1)}
+                        </td>
+                        <td>
+                          <span
+                            className="badge"
+                            style={{
+                              ...gradeColor(letter),
+                              background: letter.startsWith("A")
+                                ? "#e6f4ea"
+                                : letter.startsWith("B")
+                                  ? "var(--navy-050)"
+                                  : letter.startsWith("C")
+                                    ? "var(--gold-100)"
+                                    : "#fef2f2",
+                              fontWeight: 600,
+                              fontSize: 12,
+                            }}
+                          >
+                            {letter}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Table footer */}
+            <div
+              className="flex items-center justify-between px-6 py-3 text-xs"
+              style={{
+                borderTop: "1px solid var(--hairline)",
+                background: "var(--bg-alt, #ede8e0)",
+                color: "var(--ink-muted)",
+                borderRadius: "0 0 var(--r-lg, 16px) var(--r-lg, 16px)",
+              }}
+            >
+              <span>{grades.length} records</span>
+              {grades.length > 0 && (
+                <span>
+                  Class avg{" "}
+                  <strong style={{ color: "var(--ink)" }}>
+                    {(
+                      grades.reduce((sum, g) => sum + Number(g.calculatedNumeric), 0) /
+                      grades.length
+                    ).toFixed(1)}
+                  </strong>
+                </span>
+              )}
+            </div>
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </>
   );
 }
